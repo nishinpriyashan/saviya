@@ -1,0 +1,27 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Storage rules do not have direct access to Firestore data to check roles easily,
+    // so we rely on path matching and custom claims (if we had them).
+    // For this prototype, we'll restrict based on UID matching the path for beneficiaries.
+    // In a real app, admins/GNs would use custom auth claims (request.auth.token.role == 'gn').
+    // Since we don't have custom claims set up in the frontend, we'll allow authenticated read 
+    // for simplicity in this prototype demonstration, but restrict writes tightly.
+    
+    match /supporting-documents/{beneficiaryId}/{requestId}/{fileName} {
+      // Only the beneficiary who owns this path can upload/delete
+      allow write: if isAuthenticated() && request.auth.uid == beneficiaryId;
+      
+      // In a production environment, this should check for admin/gn custom claims.
+      // For prototype, we allow any authenticated user to read, but the frontend
+      // UI hides the links from donors.
+      allow read: if isAuthenticated();
+    }
+  }
+}

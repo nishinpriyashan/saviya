@@ -1,0 +1,95 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helpers ────────────────────────────────────────────────────────────────
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    // Safe role lookup — returns null if the user doc doesn't exist yet
+    function getRole() {
+      return exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        ? get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role
+        : null;
+    }
+
+    function isAdmin() { return isAuth() && getRole() == 'admin'; }
+    function isGN()    { return isAuth() && getRole() == 'gn'; }
+    function isDonor() { return isAuth() && getRole() == 'donor'; }
+
+    // ── /users ─────────────────────────────────────────────────────────────────
+    match /users/{userId} {
+      // Anyone authenticated can read their OWN document.
+      // Admins can read any user. GNs can read users they need to verify.
+      allow read: if isAuth() && (
+        request.auth.uid == userId ||
+        isAdmin() ||
+        isGN()
+      );
+      // A user can create their own document (registration).
+      // Admins can create/update any user (for creating GN / admin accounts).
+      allow create: if isAuth() && request.auth.uid == userId;
+      allow update: if isAuth() && (request.auth.uid == userId || isAdmin());
+      allow delete: if isAdmin();
+    }
+
+    // ── /assistanceRequests ────────────────────────────────────────────────────
+    match /assistanceRequests/{requestId} {
+      allow read: if isAuth() && (
+        // Beneficiary reads their own request
+        resource.data.beneficiaryId == request.auth.uid ||
+        // GN reads cases assigned to them
+        (isGN() && resource.data.assignedGN == request.auth.uid) ||
+        // Admin reads everything
+        isAdmin() ||
+        // Donors can read VERIFIED + PUBLIC requests
+        (isDonor() && resource.data.status == 'VERIFIED' && resource.data.visibility == 'PUBLIC')
+      );
+
+      // Beneficiaries can create requests for themselves
+      allow create: if isAuth() &&
+        getRole() == 'beneficiary' &&
+        request.resource.data.beneficiaryId == request.auth.uid;
+
+      // Beneficiaries can update their own DRAFT requests
+      // GNs can update cases assigned to them (to verify/reject)
+      // Admins can update anything (to assign a GN)
+      allow update: if isAuth() && (
+        (resource.data.beneficiaryId == request.auth.uid && resource.data.status == 'DRAFT') ||
+        (isGN() && resource.data.assignedGN == request.auth.uid) ||
+        isAdmin() ||
+        // Donors can update status to FUNDED when donating
+        (isDonor() && resource.data.status == 'VERIFIED')
+      );
+
+      // Supporting document subcollection
+      match /supportingDocuments/{docId} {
+        allow read: if isAuth() && (
+          get(/databases/$(database)/documents/assistanceRequests/$(requestId)).data.beneficiaryId == request.auth.uid ||
+          (isGN() && get(/databases/$(database)/documents/assistanceRequests/$(requestId)).data.assignedGN == request.auth.uid) ||
+          isAdmin()
+        );
+        allow create: if isAuth() &&
+          get(/databases/$(database)/documents/assistanceRequests/$(requestId)).data.beneficiaryId == request.auth.uid;
+      }
+    }
+
+    // ── /donations ─────────────────────────────────────────────────────────────
+    match /donations/{donationId} {
+      allow read: if isAuth() && (
+        resource.data.donorId == request.auth.uid ||
+        isAdmin()
+      );
+      allow create: if isAuth() &&
+        isDonor() &&
+        request.resource.data.donorId == request.auth.uid;
+    }
+
+    // ── /auditEvents ───────────────────────────────────────────────────────────
+    match /auditEvents/{eventId} {
+      allow read: if isAuth() && (isAdmin() || resource.data.actorId == request.auth.uid);
+      allow create: if isAuth() && request.resource.data.actorId == request.auth.uid;
+    }
+  }
+}
