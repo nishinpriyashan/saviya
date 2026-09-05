@@ -57,7 +57,7 @@ export default function DonorDashboard() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 animate-fade-in-up">
         <div>
           <h1 className="text-3xl font-extrabold text-foreground tracking-tight">
-            Welcome, <span className="text-gradient-green">{userData?.displayName?.split(' ')[0]}</span> ❤️
+            Welcome, <span className="text-gradient-green">{userData?.displayName?.split(' ')[0]}</span>
           </h1>
           <p className="text-muted-foreground mt-1">Discover verified cases and make a real difference.</p>
         </div>

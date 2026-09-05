@@ -12,7 +12,7 @@ export default function Dashboard() {
   const { userData } = useAuth();
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState('');
+  const [error, setError] = useState('');
 
   useEffect(() => {
     if (!userData?.uid) return;
@@ -76,7 +76,7 @@ export default function Dashboard() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div className="animate-fade-in-up">
           <h1 className="text-3xl font-extrabold text-foreground tracking-tight">
-            Welcome back, <span className="text-gradient-green">{userData?.displayName?.split(' ')[0]}</span> 👋
+            Welcome back, <span className="text-gradient-green">{userData?.displayName?.split(' ')[0]}</span>
           </h1>
           <p className="text-muted-foreground mt-1">Track your assistance requests and their progress.</p>
         </div>
@@ -92,10 +92,10 @@ export default function Dashboard() {
       <div className="grid md:grid-cols-3 gap-6 mb-10">
         {[
           { label: 'Total Requests', value: requests.length, icon: FileText, color: 'text-primary' },
-          { label: 'Verified',       value: requests.filter(r => r.status === 'VERIFIED').length, icon: CheckCircle2, color: 'text-blue-600' },
-          { label: 'Funded',         value: requests.filter(r => r.status === 'FUNDED' || r.status === 'COMPLETED').length, icon: CheckCircle2, color: 'text-emerald-600' },
+          { label: 'Verified', value: requests.filter(r => r.status === 'VERIFIED').length, icon: CheckCircle2, color: 'text-blue-600' },
+          { label: 'Funded', value: requests.filter(r => r.status === 'FUNDED' || r.status === 'COMPLETED').length, icon: CheckCircle2, color: 'text-emerald-600' },
         ].map(({ label, value, icon: Icon, color }, i) => (
-          <div key={i} className={`card-hover stat-card bg-white rounded-2xl border border-border p-6 shadow-sm animate-fade-in-up delay-${(i+1)*100}`}>
+          <div key={i} className={`card-hover stat-card bg-white rounded-2xl border border-border p-6 shadow-sm animate-fade-in-up delay-${(i + 1) * 100}`}>
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm font-medium text-muted-foreground">{label}</span>
               <div className="w-9 h-9 bg-primary/10 rounded-xl flex items-center justify-center">
@@ -108,7 +108,7 @@ export default function Dashboard() {
       </div>
 
       <h2 className="text-xl font-bold mb-4">Your Requests</h2>
-      
+
       {loading ? (
         <div className="py-12 text-center text-muted-foreground">Loading requests...</div>
       ) : error ? (
