@@ -68,7 +68,7 @@ export default function Register() {
 
       // Redirect to correct dashboard based on role
       switch (data.role) {
-        case 'beneficiary': navigate('/beneficiary'); break;
+        case 'beneficiary': navigate('/beneficiary/profile/setup'); break;
         case 'donor':       navigate('/donor');       break;
         default:            navigate('/');
       }
@@ -138,7 +138,9 @@ export default function Register() {
                 {...register('role')}
               />
               <p className="text-xs text-muted-foreground mt-1">
-                Note: GN Officials and Administrators are registered internally.
+                Note: GN Officials can register at{' '}
+                <a href="/register/gn" className="text-primary font-medium hover:underline">/register/gn</a>.
+                Administrators are registered internally.
               </p>
             </div>
 
