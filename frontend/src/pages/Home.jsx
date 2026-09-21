@@ -6,11 +6,13 @@ import { doc, getDoc } from 'firebase/firestore';
 import {
   ShieldCheck, ArrowRight, Sun, Moon, Heart, AlertTriangle, MapPin,
   ChevronLeft, ChevronRight, BadgeCheck, Lock, Users, TrendingUp,
-  Sparkles, Star, X, Eye, EyeOff, LogIn, FileText, HeartHandshake, CheckCircle2
+  Sparkles, Star, X, Eye, EyeOff, LogIn, FileText, HeartHandshake, CheckCircle2,
+  LayoutDashboard
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { db, auth } from '../firebase/config';
 import { Button } from '../components/ui/Button';
+import { useAuth } from '../contexts/AuthContext';
 
 // ── Images ───────────────────────────────────────────────────────────────────
 import slide1 from '../assets/slideshow/Gemini_Generated_Image_h9s59ph9s59ph9s5.jpg';
@@ -318,6 +320,18 @@ export default function Home() {
   const [loginOpen, setLoginOpen] = useState(false);
   const [urgentRequests, setUrgentRequests] = useState([]);
   const [loadingReqs, setLoadingReqs] = useState(true);
+  const { currentUser, userData } = useAuth();
+
+  // Resolve dashboard path for the currently logged-in user
+  const dashboardPath = (() => {
+    switch (userData?.role) {
+      case 'beneficiary': return '/beneficiary';
+      case 'donor':       return '/donor';
+      case 'gn':          return '/gn';
+      case 'admin':       return '/admin';
+      default:            return null;
+    }
+  })();
 
   // Fetch public urgent requests (no auth needed — Firestore rules updated)
   useEffect(() => {
@@ -358,8 +372,8 @@ export default function Home() {
     <div className="min-h-screen bg-background text-foreground flex flex-col overflow-x-hidden transition-colors duration-300">
       <style>{`@keyframes slideProgress { from { width: 0% } to { width: 100% } }`}</style>
 
-      {/* ── LOGIN PANEL ── */}
-      {loginOpen && <LoginPanel onClose={() => setLoginOpen(false)} />}
+      {/* ── LOGIN PANEL — only show if not already logged in ── */}
+      {loginOpen && !currentUser && <LoginPanel onClose={() => setLoginOpen(false)} />}
 
       {/* ── NAVBAR ── */}
       <header className="sticky top-0 z-30 w-full border-b border-border bg-background/85 backdrop-blur-md shadow-sm transition-colors duration-300">
@@ -397,18 +411,28 @@ export default function Home() {
               {dark ? <Sun className="h-4 w-4 text-yellow-400" /> : <Moon className="h-4 w-4 text-muted-foreground" />}
             </button>
 
-            {/* Login — opens slide panel */}
-            <button
-              onClick={() => setLoginOpen(true)}
-              className="text-sm font-semibold text-muted-foreground hover:text-primary transition-colors px-1"
-            >
-              Log in
-            </button>
-
-            {/* Get Started — opens slide panel */}
-            <button onClick={() => setLoginOpen(true)}>
-              <Button size="sm" className="btn-glow rounded-full px-5">Get Started</Button>
-            </button>
+            {currentUser && dashboardPath ? (
+              /* ── Already logged in — show dashboard shortcut ── */
+              <Link to={dashboardPath}>
+                <Button size="sm" className="btn-glow rounded-full px-5 gap-2">
+                  <LayoutDashboard className="h-4 w-4" />
+                  My Dashboard
+                </Button>
+              </Link>
+            ) : (
+              /* ── Not logged in — show login / get started ── */
+              <>
+                <button
+                  onClick={() => setLoginOpen(true)}
+                  className="text-sm font-semibold text-muted-foreground hover:text-primary transition-colors px-1"
+                >
+                  Log in
+                </button>
+                <button onClick={() => setLoginOpen(true)}>
+                  <Button size="sm" className="btn-glow rounded-full px-5">Get Started</Button>
+                </button>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -505,11 +529,19 @@ export default function Home() {
                           <div className="flex items-center gap-1.5 text-xs text-primary font-medium bg-primary/8 rounded-lg px-2.5 py-1.5">
                             <BadgeCheck className="h-3.5 w-3.5 shrink-0" /> GN Verified · Admin Approved
                           </div>
-                          <button onClick={() => setLoginOpen(true)} className="w-full">
-                            <Button className="w-full btn-glow rounded-xl gap-2 text-sm" size="sm">
-                              <Heart className="h-4 w-4 fill-white/30" /> Donate Now
-                            </Button>
-                          </button>
+                          {currentUser && dashboardPath ? (
+                            <Link to={dashboardPath} className="block">
+                              <Button className="w-full btn-glow rounded-xl gap-2 text-sm" size="sm">
+                                <Heart className="h-4 w-4 fill-white/30" /> Donate via Dashboard
+                              </Button>
+                            </Link>
+                          ) : (
+                            <button onClick={() => setLoginOpen(true)} className="w-full">
+                              <Button className="w-full btn-glow rounded-xl gap-2 text-sm" size="sm">
+                                <Heart className="h-4 w-4 fill-white/30" /> Donate Now
+                              </Button>
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -633,16 +665,26 @@ export default function Home() {
                 Register as a Beneficiary to seek verified assistance, or as a Donor to support genuine cases in Sri Lankan communities.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link to="/register">
-                  <Button size="lg" className="bg-white text-primary hover:bg-primary-50 rounded-full px-10 text-base h-12 font-bold shadow-xl transition-all hover:-translate-y-0.5">
-                    Get Started Free
-                  </Button>
-                </Link>
-                <button onClick={() => setLoginOpen(true)}>
-                  <Button variant="outline" size="lg" className="rounded-full px-10 text-base h-12 border-white/30 text-white hover:bg-white/10 backdrop-blur-sm transition-all">
-                    Sign In
-                  </Button>
-                </button>
+                {currentUser && dashboardPath ? (
+                  <Link to={dashboardPath}>
+                    <Button size="lg" className="bg-white text-primary hover:bg-primary-50 rounded-full px-10 text-base h-12 font-bold shadow-xl transition-all hover:-translate-y-0.5 gap-2">
+                      <LayoutDashboard className="h-5 w-5" /> Go to My Dashboard
+                    </Button>
+                  </Link>
+                ) : (
+                  <>
+                    <Link to="/register">
+                      <Button size="lg" className="bg-white text-primary hover:bg-primary-50 rounded-full px-10 text-base h-12 font-bold shadow-xl transition-all hover:-translate-y-0.5">
+                        Get Started Free
+                      </Button>
+                    </Link>
+                    <button onClick={() => setLoginOpen(true)}>
+                      <Button variant="outline" size="lg" className="rounded-full px-10 text-base h-12 border-white/30 text-white hover:bg-white/10 backdrop-blur-sm transition-all">
+                        Sign In
+                      </Button>
+                    </button>
+                  </>
+                )}
               </div>
             </Reveal>
           </div>

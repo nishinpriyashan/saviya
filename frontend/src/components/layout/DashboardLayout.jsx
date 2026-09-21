@@ -1,5 +1,5 @@
-import { Link, useLocation } from 'react-router-dom';
-import { LogOut, ShieldCheck, User, ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { LogOut, ShieldCheck, User, ChevronRight, Home } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { auth } from '../../firebase/config';
 
@@ -13,7 +13,6 @@ const roleMeta = {
 export default function DashboardLayout({ children, roleTitle }) {
   const { userData } = useAuth();
   const badgeStyle = roleMeta[roleTitle]?.color || 'bg-primary/10 text-primary border-primary/20';
-
   const handleSignOut = () => auth?.signOut();
 
   return (
@@ -21,14 +20,14 @@ export default function DashboardLayout({ children, roleTitle }) {
 
       {/* ── Header ── */}
       <header className="sticky top-0 z-50 w-full bg-white border-b border-border shadow-sm">
-        {/* Green accent line on top */}
         <div className="h-0.5 w-full bg-gradient-to-r from-primary-700 via-primary-400 to-primary-700 animate-shimmer" />
 
         <div className="container mx-auto px-4 h-15 flex items-center justify-between py-3">
 
-          {/* Brand + Role breadcrumb */}
+          {/* Brand + breadcrumb */}
           <div className="flex items-center gap-3">
-            <Link to="/" className="flex items-center gap-2 group">
+            {/* Saviya logo — navigates to Home, does NOT log out */}
+            <Link to="/" className="flex items-center gap-2 group" title="Back to Home page">
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shadow-sm group-hover:bg-primary-700 transition-colors">
                 <ShieldCheck className="h-4 w-4 text-white" />
               </div>
@@ -43,7 +42,16 @@ export default function DashboardLayout({ children, roleTitle }) {
           </div>
 
           {/* Right side */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            {/* Home shortcut — clearly labelled so users know it won't sign them out */}
+            <Link
+              to="/"
+              className="hidden sm:flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-primary transition-colors px-3 py-1.5 rounded-lg hover:bg-primary/5"
+            >
+              <Home className="h-4 w-4" />
+              <span className="hidden md:inline">Home</span>
+            </Link>
+
             {userData?.displayName && (
               <div className="hidden sm:flex items-center gap-2 bg-slate-50 border border-border px-3 py-1.5 rounded-full text-sm font-medium text-muted-foreground">
                 <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center">
@@ -53,6 +61,7 @@ export default function DashboardLayout({ children, roleTitle }) {
               </div>
             )}
 
+            {/* Sign Out — only button that actually signs out */}
             <button
               onClick={handleSignOut}
               className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-destructive transition-colors duration-200 px-3 py-1.5 rounded-lg hover:bg-destructive/5"
@@ -73,6 +82,9 @@ export default function DashboardLayout({ children, roleTitle }) {
       <footer className="border-t bg-white py-4">
         <div className="container mx-auto px-4 flex items-center justify-between text-xs text-muted-foreground">
           <span>Saviya Platform — {roleTitle} Portal</span>
+          <Link to="/" className="hover:text-primary transition-colors flex items-center gap-1">
+            <Home className="h-3 w-3" /> Back to Home
+          </Link>
           <span>© {new Date().getFullYear()} Academic Prototype</span>
         </div>
       </footer>
