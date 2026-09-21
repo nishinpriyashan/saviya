@@ -36,16 +36,18 @@ service cloud.firestore {
 
     // ── /assistanceRequests ────────────────────────────────────────────────────
     match /assistanceRequests/{requestId} {
-      allow read: if isAuth() && (
-        // Beneficiary reads their own request
+      // PUBLIC: anyone (even unauthenticated) can read VERIFIED + PUBLIC requests
+      // This powers the public Home page display without forcing login.
+      allow read: if (
+        resource.data.status == 'VERIFIED' && resource.data.visibility == 'PUBLIC'
+      ) ||
+      // Authenticated reads:
+      (isAuth() && (
         resource.data.beneficiaryId == request.auth.uid ||
-        // GN reads cases assigned to them
         (isGN() && resource.data.assignedGN == request.auth.uid) ||
-        // Admin reads everything
         isAdmin() ||
-        // Donors can read VERIFIED + PUBLIC requests
-        (isDonor() && resource.data.status == 'VERIFIED' && resource.data.visibility == 'PUBLIC')
-      );
+        isDonor()
+      ));
 
       // Beneficiaries can create requests for themselves
       allow create: if isAuth() &&
