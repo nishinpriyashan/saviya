@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import Landing from '../pages/Landing';
+import Home from '../pages/Home';
 import Login from '../pages/auth/Login';
 import Register from '../pages/auth/Register';
 import RegisterGN from '../pages/auth/RegisterGN';
@@ -53,7 +54,8 @@ const PublicOnlyRoute = ({ children }) => {
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Landing />} />
+      <Route path="/" element={<Home />} />
+      <Route path="/about" element={<Landing />} />
 
       {/* Auth Routes */}
       <Route path="/login" element={

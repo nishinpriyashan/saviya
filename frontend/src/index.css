@@ -1,6 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
+/* ── Dark Mode override (applied via class on <html>) ──────────────────────── */
+html.dark {
+  --color-background:          #0a0f14;
+  --color-foreground:          #f0f6ff;
+  --color-card:                #111820;
+  --color-card-foreground:     #f0f6ff;
+  --color-popover:             #111820;
+  --color-popover-foreground:  #f0f6ff;
+  --color-secondary:           #1e2a35;
+  --color-secondary-foreground:#f0f6ff;
+  --color-muted:               #1e2a35;
+  --color-muted-foreground:    #94a3b8;
+  --color-border:              #1e3a2f;
+  --color-input:               #1e3a2f;
+  --color-accent:              #0f2a1a;
+  --color-accent-foreground:   #4ade80;
+}
+
 @theme {
   --color-primary-50:  #f0fdf4;
   --color-primary-100: #dcfce7;
@@ -171,4 +189,18 @@
 .reveal.visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* ── Slideshow crossfade ─────────────────────────────────────────────────── */
+@keyframes slideKenBurns {
+  0%   { transform: scale(1)    translate(0px, 0px); }
+  50%  { transform: scale(1.06) translate(-8px, -4px); }
+  100% { transform: scale(1)    translate(0px, 0px); }
+}
+.slide-ken-burns { animation: slideKenBurns 8s ease-in-out infinite; }
+
+/* ── Dark-mode aware glass card ──────────────────────────────────────────── */
+html.dark .glass-card {
+  background: rgba(17,24,32,0.85);
+  border-color: rgba(22,163,74,0.25);
 }
