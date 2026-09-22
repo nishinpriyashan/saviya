@@ -708,21 +708,22 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 {currentUser && dashboardPath ? (
                   <Link to={dashboardPath}>
-                    <Button size="lg" className="bg-white text-primary hover:bg-primary-50 rounded-full px-10 text-base h-12 font-bold shadow-xl transition-all hover:-translate-y-0.5 gap-2">
+                    <button className="inline-flex items-center justify-center gap-2 bg-white text-primary font-bold text-base rounded-full px-10 h-12 shadow-xl hover:bg-green-50 hover:-translate-y-0.5 transition-all">
                       <LayoutDashboard className="h-5 w-5" /> Go to My Dashboard
-                    </Button>
+                    </button>
                   </Link>
                 ) : (
                   <>
                     <Link to="/register">
-                      <Button size="lg" className="bg-white text-primary hover:bg-primary-50 rounded-full px-10 text-base h-12 font-bold shadow-xl transition-all hover:-translate-y-0.5">
+                      <button className="inline-flex items-center justify-center bg-white text-primary font-bold text-base rounded-full px-10 h-12 shadow-xl hover:bg-green-50 hover:-translate-y-0.5 transition-all">
                         Get Started Free
-                      </Button>
+                      </button>
                     </Link>
-                    <button onClick={() => setLoginOpen(true)}>
-                      <Button variant="outline" size="lg" className="rounded-full px-10 text-base h-12 border-white/30 text-white hover:bg-white/10 backdrop-blur-sm transition-all">
-                        Sign In
-                      </Button>
+                    <button
+                      onClick={() => setLoginOpen(true)}
+                      className="inline-flex items-center justify-center rounded-full px-10 text-base h-12 border border-white/40 text-white bg-white/10 hover:bg-white/20 backdrop-blur-sm font-semibold transition-all"
+                    >
+                      Sign In
                     </button>
                   </>
                 )}
