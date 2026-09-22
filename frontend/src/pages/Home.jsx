@@ -171,7 +171,7 @@ function Reveal({ children, className = '' }) {
   return <div ref={ref} className={`reveal ${className}`}>{children}</div>;
 }
 
-// ── Inline Login Panel ────────────────────────────────────────────────────────
+// ── Login Modal (centred, modern) ─────────────────────────────────────────────
 function LoginPanel({ onClose }) {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -198,10 +198,12 @@ function LoginPanel({ onClose }) {
       }
       toast.success('Welcome back!');
     } catch (err) {
-      const msg = err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password'
-        ? 'Incorrect email or password.'
-        : err.code === 'auth/user-not-found' ? 'No account found with this email.'
-        : 'Login failed. Please try again.';
+      const msg =
+        err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password'
+          ? 'Incorrect email or password.'
+          : err.code === 'auth/user-not-found'
+          ? 'No account found with this email.'
+          : 'Login failed. Please try again.';
       toast.error(msg);
       setLoading(false);
     }
@@ -210,104 +212,142 @@ function LoginPanel({ onClose }) {
   return (
     <>
       {/* Backdrop */}
-      <div className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm animate-fade-in" onClick={onClose} />
+      <div
+        className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm animate-fade-in"
+        onClick={onClose}
+      />
 
-      {/* Side panel */}
-      <div className="fixed top-0 right-0 h-full w-full max-w-sm z-50 bg-card border-l border-border shadow-2xl flex flex-col animate-slide-left">
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-border">
-          <div className="flex items-center gap-2">
-            <div className="bg-primary/10 p-1.5 rounded-lg">
-              <ShieldCheck className="h-4 w-4 text-primary" />
+      {/* Centred modal card */}
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+        <div className="pointer-events-auto w-full max-w-md bg-card rounded-3xl shadow-2xl border border-border overflow-hidden animate-fade-in-up">
+
+          {/* ── Green branded header ── */}
+          <div className="relative bg-gradient-to-br from-primary-600 to-primary-800 px-8 pt-8 pb-10 text-center overflow-hidden">
+            {/* Subtle dot pattern */}
+            <div className="absolute inset-0 opacity-10"
+              style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
+
+            {/* Close button */}
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 hover:bg-white/25 flex items-center justify-center transition-colors"
+              aria-label="Close"
+            >
+              <X className="h-4 w-4 text-white" />
+            </button>
+
+            {/* Logo mark */}
+            <div className="relative w-14 h-14 bg-white/15 border border-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
+              <ShieldCheck className="h-7 w-7 text-white" />
             </div>
-            <span className="font-bold text-foreground">Sign in to Saviya</span>
-          </div>
-          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-muted transition-colors">
-            <X className="h-4 w-4 text-muted-foreground" />
-          </button>
-        </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="flex-1 flex flex-col px-6 py-8 gap-5 overflow-y-auto">
-          <div>
-            <p className="text-sm text-muted-foreground">Enter your credentials to access your dashboard.</p>
+            <h2 className="relative text-2xl font-extrabold text-white mb-1">Welcome Back</h2>
+            <p className="relative text-primary-200 text-sm">Sign in to access your Saviya dashboard</p>
           </div>
 
-          {/* Email */}
-          <div className="space-y-1.5">
-            <label htmlFor="panel-email" className="text-sm font-medium text-foreground">Email Address</label>
-            <input
-              id="panel-email"
-              type="email"
-              autoComplete="email"
-              autoFocus
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              className="flex h-11 w-full rounded-xl border border-input bg-background px-4 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary transition-all"
-              required
-            />
-          </div>
+          {/* ── Form body ── */}
+          <form onSubmit={handleSubmit} className="px-8 py-7 space-y-5">
 
-          {/* Password */}
-          <div className="space-y-1.5">
-            <label htmlFor="panel-password" className="text-sm font-medium text-foreground">Password</label>
-            <div className="relative">
+            {/* Email */}
+            <div className="space-y-1.5">
+              <label htmlFor="modal-email" className="text-sm font-semibold text-foreground">
+                Email Address
+              </label>
               <input
-                id="panel-password"
-                type={showPw ? 'text' : 'password'}
-                autoComplete="current-password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="flex h-11 w-full rounded-xl border border-input bg-background px-4 pr-10 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary transition-all"
+                id="modal-email"
+                type="email"
+                autoComplete="email"
+                autoFocus
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                className="flex h-12 w-full rounded-xl border border-input bg-background px-4 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary transition-all"
                 required
               />
-              <button type="button" onClick={() => setShowPw(v => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors">
-                {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
             </div>
-          </div>
 
-          {/* Submit */}
-          <Button type="submit" className="w-full btn-glow rounded-xl h-11 gap-2 mt-2" disabled={loading}>
-            {loading
-              ? <span className="flex items-center gap-2"><span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />Signing in...</span>
-              : <><LogIn className="h-4 w-4" /> Sign In</>
-            }
-          </Button>
-
-          {/* Roles info */}
-          <div className="rounded-xl bg-muted/60 border border-border p-4 space-y-2">
-            <p className="text-xs font-semibold text-foreground mb-2">Which dashboard will I see?</p>
-            {[
-              { role: 'Beneficiary', desc: 'Submit & track requests' },
-              { role: 'Donor', desc: 'Browse & fund verified cases' },
-              { role: 'GN Officer', desc: 'Review & verify cases' },
-              { role: 'Admin', desc: 'Full platform management' },
-            ].map(({ role, desc }) => (
-              <div key={role} className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-primary shrink-0" />
-                <span className="text-xs font-medium text-foreground">{role}</span>
-                <span className="text-xs text-muted-foreground">— {desc}</span>
+            {/* Password */}
+            <div className="space-y-1.5">
+              <label htmlFor="modal-password" className="text-sm font-semibold text-foreground">
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  id="modal-password"
+                  type={showPw ? 'text' : 'password'}
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="flex h-12 w-full rounded-xl border border-input bg-background px-4 pr-11 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary transition-all"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPw(v => !v)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  tabIndex={-1}
+                >
+                  {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
               </div>
-            ))}
-          </div>
-        </form>
+            </div>
 
-        {/* Footer */}
-        <div className="px-6 py-5 border-t border-border space-y-3">
-          <p className="text-sm text-center text-muted-foreground">
-            Don't have an account?{' '}
-            <Link to="/register" onClick={onClose} className="text-primary font-semibold hover:underline">
-              Register now
-            </Link>
-          </p>
-          <p className="text-xs text-center text-muted-foreground">
-            GN Officers:{' '}
-            <Link to="/register/gn" onClick={onClose} className="text-primary hover:underline">register here</Link>
-          </p>
+            {/* Sign In button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full h-12 rounded-xl bg-primary text-white font-bold text-sm flex items-center justify-center gap-2 hover:bg-primary-700 active:scale-[0.98] transition-all shadow-md hover:shadow-lg disabled:opacity-70 btn-glow"
+            >
+              {loading ? (
+                <>
+                  <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Signing in…
+                </>
+              ) : (
+                <>
+                  <LogIn className="h-4 w-4" /> Sign In to Dashboard
+                </>
+              )}
+            </button>
+
+            {/* Role guide */}
+            <div className="rounded-2xl bg-muted/60 border border-border p-4">
+              <p className="text-xs font-semibold text-foreground mb-2.5 text-center">You'll be taken to your dashboard based on your role</p>
+              <div className="grid grid-cols-2 gap-1.5">
+                {[
+                  { role: 'Beneficiary', desc: 'Submit requests' },
+                  { role: 'Donor',       desc: 'Fund cases' },
+                  { role: 'GN Officer',  desc: 'Verify cases' },
+                  { role: 'Admin',       desc: 'Full management' },
+                ].map(({ role, desc }) => (
+                  <div key={role} className="flex items-center gap-1.5 bg-card rounded-xl px-2.5 py-2 border border-border">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                    <div className="min-w-0">
+                      <p className="text-xs font-semibold text-foreground leading-none">{role}</p>
+                      <p className="text-xs text-muted-foreground leading-none mt-0.5">{desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </form>
+
+          {/* ── Footer ── */}
+          <div className="px-8 pb-7 -mt-1 text-center space-y-2">
+            <p className="text-sm text-muted-foreground">
+              Don't have an account?{' '}
+              <Link to="/register" onClick={onClose} className="text-primary font-bold hover:underline">
+                Register now
+              </Link>
+            </p>
+            <p className="text-xs text-muted-foreground">
+              GN Officers:{' '}
+              <Link to="/register/gn" onClick={onClose} className="text-primary hover:underline font-medium">
+                register here
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </>
@@ -315,6 +355,7 @@ function LoginPanel({ onClose }) {
 }
 
 // ── MAIN ──────────────────────────────────────────────────────────────────────
+
 export default function Home() {
   const [dark, setDark] = useDarkMode();
   const [loginOpen, setLoginOpen] = useState(false);
