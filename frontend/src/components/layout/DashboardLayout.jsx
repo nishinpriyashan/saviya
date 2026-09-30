@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { LogOut, ShieldCheck, User, ChevronRight, Home } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
@@ -15,8 +16,20 @@ export default function DashboardLayout({ children, roleTitle }) {
   const badgeStyle = roleMeta[roleTitle]?.color || 'bg-primary/10 text-primary border-primary/20';
   const handleSignOut = () => auth?.signOut();
 
+  // ── Force light mode inside dashboards ──────────────────────────────────────
+  // Dark mode is a Home-page feature. Dashboards always use the light theme so
+  // that all hardcoded colours (bg-white, text-slate-*, etc.) display correctly.
+  useEffect(() => {
+    const html = document.documentElement;
+    const wasDark = html.classList.contains('dark');
+    html.classList.remove('dark');            // strip while dashboard is open
+    return () => {
+      if (wasDark) html.classList.add('dark'); // restore when leaving
+    };
+  }, []);
+
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="dashboard-root min-h-screen bg-slate-50 flex flex-col">
 
       {/* ── Header ── */}
       <header className="sticky top-0 z-50 w-full bg-white border-b border-border shadow-sm">
