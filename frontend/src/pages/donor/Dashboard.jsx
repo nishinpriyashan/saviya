@@ -35,8 +35,8 @@ function CaseCard({ request, index }) {
   const urgencyColor = request.urgency === 'Critical'
     ? 'from-red-500 to-rose-600'
     : request.urgency === 'High'
-    ? 'from-orange-500 to-amber-500'
-    : 'from-primary to-primary-600';
+      ? 'from-orange-500 to-amber-500'
+      : 'from-primary to-primary-600';
 
   return (
     <div
@@ -141,7 +141,7 @@ export default function DonorDashboard() {
             <span className="text-xs font-semibold uppercase tracking-widest text-amber-600">Donor Portal</span>
           </div>
           <h1 className="text-3xl font-extrabold text-foreground tracking-tight">
-            Welcome, <span className="text-gradient-green">{userData?.displayName?.split(' ')[0]}</span> ❤️
+            Welcome, <span className="text-gradient-green">{userData?.displayName?.split(' ')[0]}</span>
           </h1>
           <p className="text-muted-foreground mt-1">Your generosity changes lives — discover who needs your support today.</p>
         </div>

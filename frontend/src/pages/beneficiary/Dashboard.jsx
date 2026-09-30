@@ -33,15 +33,15 @@ function Skeleton({ className = '' }) {
 
 // ── Status badge ──────────────────────────────────────────────────────────────
 const STATUS_MAP = {
-  DRAFT:           { color: 'bg-slate-100 text-slate-600',        icon: FileText,    label: 'Draft' },
-  SUBMITTED:       { color: 'bg-blue-100 text-blue-700',          icon: Clock,       label: 'Submitted' },
-  UNDER_REVIEW:    { color: 'bg-blue-100 text-blue-700',          icon: Clock,       label: 'Under Review' },
-  GN_VERIFICATION: { color: 'bg-amber-100 text-amber-700',        icon: Clock,       label: 'GN Verification' },
-  VERIFIED:        { color: 'bg-emerald-100 text-emerald-700',    icon: CheckCircle2,label: 'Verified' },
-  REJECTED:        { color: 'bg-red-100 text-red-600',            icon: XCircle,     label: 'Rejected' },
-  RETURNED:        { color: 'bg-orange-100 text-orange-700',      icon: XCircle,     label: 'Returned' },
-  FUNDED:          { color: 'bg-primary text-white',              icon: CheckCircle2,label: 'Funded' },
-  COMPLETED:       { color: 'bg-green-100 text-green-700',        icon: CheckCircle2,label: 'Completed' },
+  DRAFT: { color: 'bg-slate-100 text-slate-600', icon: FileText, label: 'Draft' },
+  SUBMITTED: { color: 'bg-blue-100 text-blue-700', icon: Clock, label: 'Submitted' },
+  UNDER_REVIEW: { color: 'bg-blue-100 text-blue-700', icon: Clock, label: 'Under Review' },
+  GN_VERIFICATION: { color: 'bg-amber-100 text-amber-700', icon: Clock, label: 'GN Verification' },
+  VERIFIED: { color: 'bg-emerald-100 text-emerald-700', icon: CheckCircle2, label: 'Verified' },
+  REJECTED: { color: 'bg-red-100 text-red-600', icon: XCircle, label: 'Rejected' },
+  RETURNED: { color: 'bg-orange-100 text-orange-700', icon: XCircle, label: 'Returned' },
+  FUNDED: { color: 'bg-primary text-white', icon: CheckCircle2, label: 'Funded' },
+  COMPLETED: { color: 'bg-green-100 text-green-700', icon: CheckCircle2, label: 'Completed' },
 };
 
 function StatusBadge({ status }) {
@@ -62,12 +62,11 @@ function RequestCard({ request, index }) {
       style={{ animationDelay: `${index * 80}ms`, animation: 'fadeInUp 0.6s ease both' }}
     >
       {/* Coloured top stripe by status */}
-      <div className={`h-1.5 w-full ${
-        request.status === 'FUNDED' || request.status === 'COMPLETED' ? 'bg-gradient-to-r from-emerald-500 to-green-400' :
-        request.status === 'VERIFIED' ? 'bg-gradient-to-r from-primary to-primary-400' :
-        request.status === 'REJECTED' ? 'bg-gradient-to-r from-red-500 to-red-400' :
-        'bg-gradient-to-r from-slate-300 to-slate-200'
-      }`} />
+      <div className={`h-1.5 w-full ${request.status === 'FUNDED' || request.status === 'COMPLETED' ? 'bg-gradient-to-r from-emerald-500 to-green-400' :
+          request.status === 'VERIFIED' ? 'bg-gradient-to-r from-primary to-primary-400' :
+            request.status === 'REJECTED' ? 'bg-gradient-to-r from-red-500 to-red-400' :
+              'bg-gradient-to-r from-slate-300 to-slate-200'
+        }`} />
 
       <div className="p-5 flex flex-col flex-1">
         <div className="flex items-center justify-between mb-3">
@@ -124,10 +123,10 @@ export default function BeneficiaryDashboard() {
   }, [userData]);
 
   const stats = [
-    { label: 'Total Requests',  value: requests.length,                                                    icon: FileText,    gradient: 'from-slate-500 to-slate-600',   bg: 'bg-slate-50' },
-    { label: 'In Progress',     value: requests.filter(r => !['FUNDED','COMPLETED','REJECTED'].includes(r.status)).length, icon: TrendingUp,   gradient: 'from-blue-500 to-blue-600',     bg: 'bg-blue-50' },
-    { label: 'Verified',        value: requests.filter(r => r.status === 'VERIFIED').length,               icon: CheckCircle2,gradient: 'from-primary-500 to-primary-600', bg: 'bg-primary/10' },
-    { label: 'Funded',          value: requests.filter(r => ['FUNDED','COMPLETED'].includes(r.status)).length, icon: Sparkles,gradient: 'from-emerald-500 to-emerald-600',bg: 'bg-emerald-50' },
+    { label: 'Total Requests', value: requests.length, icon: FileText, gradient: 'from-slate-500 to-slate-600', bg: 'bg-slate-50' },
+    { label: 'In Progress', value: requests.filter(r => !['FUNDED', 'COMPLETED', 'REJECTED'].includes(r.status)).length, icon: TrendingUp, gradient: 'from-blue-500 to-blue-600', bg: 'bg-blue-50' },
+    { label: 'Verified', value: requests.filter(r => r.status === 'VERIFIED').length, icon: CheckCircle2, gradient: 'from-primary-500 to-primary-600', bg: 'bg-primary/10' },
+    { label: 'Funded', value: requests.filter(r => ['FUNDED', 'COMPLETED'].includes(r.status)).length, icon: Sparkles, gradient: 'from-emerald-500 to-emerald-600', bg: 'bg-emerald-50' },
   ];
 
   return (
@@ -140,7 +139,7 @@ export default function BeneficiaryDashboard() {
             <span className="text-xs font-semibold uppercase tracking-widest text-primary">Beneficiary Portal</span>
           </div>
           <h1 className="text-3xl font-extrabold text-foreground tracking-tight">
-            Welcome back, <span className="text-gradient-green">{userData?.displayName?.split(' ')[0]}</span> 👋
+            Welcome back, <span className="text-gradient-green">{userData?.displayName?.split(' ')[0]}</span>
           </h1>
           <p className="text-muted-foreground mt-1">Track your assistance requests and their progress.</p>
         </div>

@@ -45,7 +45,7 @@ export default function Register() {
       if (!firebaseConfigured || !auth || !db) {
         throw new Error('Firebase is not configured');
       }
-      
+
       // 1. Create user in Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
       const user = userCredential.user;
@@ -69,8 +69,8 @@ export default function Register() {
       // Redirect to correct dashboard based on role
       switch (data.role) {
         case 'beneficiary': navigate('/beneficiary/profile/setup'); break;
-        case 'donor':       navigate('/donor');       break;
-        default:            navigate('/');
+        case 'donor': navigate('/donor'); break;
+        default: navigate('/');
       }
     } catch (err) {
       console.error(err);
@@ -104,12 +104,12 @@ export default function Register() {
                 {error}
               </div>
             )}
-            
+
             <div className="space-y-2">
               <Label htmlFor="fullName">Full Name</Label>
               <Input
                 id="fullName"
-                placeholder="John Doe"
+                placeholder="Full Name"
                 error={errors.fullName}
                 {...register('fullName')}
               />
@@ -154,7 +154,7 @@ export default function Register() {
                   {...register('password')}
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Confirm Password</Label>
                 <Input

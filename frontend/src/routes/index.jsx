@@ -13,6 +13,7 @@ import DonorDashboard from '../pages/donor/Dashboard';
 import DonationPage from '../pages/donor/DonationPage';
 import GnDashboard from '../pages/gn/Dashboard';
 import AdminDashboard from '../pages/admin/Dashboard';
+import AdminTransactions from '../pages/admin/Transactions';
 
 // Route Guards
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -110,11 +111,17 @@ export default function AppRoutes() {
       } />
 
       {/* Admin Routes */}
-      <Route path="/admin/*" element={
+      <Route path="/admin" element={
         <ProtectedRoute allowedRoles={['admin']}>
           <AdminDashboard />
         </ProtectedRoute>
       } />
+      <Route path="/admin/transactions" element={
+        <ProtectedRoute allowedRoles={['admin']}>
+          <AdminTransactions />
+        </ProtectedRoute>
+      } />
+      <Route path="/admin/*" element={<Navigate to="/admin" replace />} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

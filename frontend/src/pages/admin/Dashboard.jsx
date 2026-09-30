@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { collection, query, where, getDocs, doc, getDoc, updateDoc, serverTimestamp, addDoc } from 'firebase/firestore';
-import { ShieldAlert, Users, FileCheck2, CheckCircle2, XCircle, ChevronDown, ChevronUp, AlertTriangle, FileText, User, MapPin, Banknote, LayoutDashboard, RefreshCw } from 'lucide-react';
+import { ShieldAlert, Users, FileCheck2, CheckCircle2, XCircle, ChevronDown, ChevronUp, AlertTriangle, FileText, User, MapPin, Banknote, LayoutDashboard, RefreshCw, CreditCard } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { db } from '../../firebase/config';
 import DashboardLayout from '../../components/layout/DashboardLayout';
@@ -358,6 +359,20 @@ export default function AdminDashboard() {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* ── Quick links ── */}
+      <div className="flex gap-3 flex-wrap mb-7" style={{ animation: 'fadeInUp 0.6s ease both 360ms' }}>
+        <Link
+          to="/admin/transactions"
+          className="flex items-center gap-2.5 px-5 py-3 bg-white border border-border rounded-2xl shadow-sm text-sm font-bold text-foreground hover:border-primary hover:text-primary hover:shadow-md transition-all group"
+        >
+          <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary-600 rounded-xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+            <CreditCard className="h-4 w-4 text-white" />
+          </div>
+          View All Transactions
+          <span className="ml-auto text-xs text-muted-foreground">→</span>
+        </Link>
       </div>
 
       {/* ── Tabs ── */}
