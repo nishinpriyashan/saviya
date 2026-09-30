@@ -631,15 +631,15 @@ export default function Home() {
             {/* Who is Saviya for — two cards */}
             <div className="grid md:grid-cols-2 gap-6">
               <Reveal>
-                <div className="card-hover rounded-3xl p-9 border border-primary/20 bg-gradient-to-br from-primary-50 to-card h-full flex flex-col">
-                  <div className="w-11 h-11 bg-primary/10 rounded-xl flex items-center justify-center mb-5">
-                    <CheckCircle2 className="h-5 w-5 text-primary" />
+                <div className="card-hover rounded-3xl p-9 border border-blue-400/40 bg-gradient-to-br from-blue-600 to-blue-800 h-full flex flex-col">
+                  <div className="w-11 h-11 bg-white/15 rounded-xl flex items-center justify-center mb-5">
+                    <CheckCircle2 className="h-5 w-5 text-white" />
                   </div>
-                  <h3 className="text-2xl font-bold text-foreground mb-3">For Beneficiaries</h3>
-                  <p className="text-muted-foreground leading-relaxed flex-1 mb-6">
+                  <h3 className="text-2xl font-bold text-white mb-3">For Beneficiaries</h3>
+                  <p className="text-blue-100 leading-relaxed flex-1 mb-6">
                     Request assistance with complete dignity. Your NIC, address, bank details, and documents are strictly private — never visible to donors or the public.
                   </p>
-                  <Link to="/register" className="inline-flex items-center font-semibold gap-2 text-primary hover:gap-3 transition-all duration-200">
+                  <Link to="/register" className="inline-flex items-center font-semibold gap-2 text-white hover:gap-3 transition-all duration-200">
                     Start a Request <ArrowRight className="h-4 w-4" />
                   </Link>
                 </div>
